@@ -1,0 +1,14 @@
+name: Custom theme
+type: theme
+description: 'Hướng dẫn tạo theme Drupal'
+base theme: false
+core_version_requirement: ^8 || ^9
+screenshot: logo.svg
+libraries:
+  - custom_theme/common
+regions:
+  header: 'header'
+  content: 'content'
+  footer: 'footer'
+ckedirot_stylesheets:
+ - /themes/custom_theme/assetes/css/custom-ckeditor.css

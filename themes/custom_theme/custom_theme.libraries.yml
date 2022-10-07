@@ -1,0 +1,28 @@
+common:
+  css:
+    layout:
+      css/bootstrap.min.css: {}
+      css/elegant-icons.css: {}
+      css/font-awesome.min.css: {}
+      css/jquery-ui.min.css: {}
+      css/magnific-popup.css: {}
+      css/owl.carousel.min.css: {}
+      css/slicknav.min.css: {}
+      css/style.css: {}
+
+  js:
+    js/bootstrap.min.js: {}
+    js/jquery.countdown.min.js: {}
+    js/jquery.magnific-popup.min.js: {}
+    js/jquery.nicescroll.min.js: {}
+    js/jquery.slicknav.js: {}
+    js/jquery-3.3.1.min.js: {}
+    js/jquery-ui.min.js: {}
+    js/main.js: {}
+    js/mixitup.min.js: {}
+    js/owl.carousel.min.js: {}
+
+jquery:
+  header: true
+  dependencies:
+    -core/jquery
