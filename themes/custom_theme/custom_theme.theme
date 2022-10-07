@@ -1,0 +1,32 @@
+<?php
+
+use Drupal\node\Entity\Node;
+use Drupal\taxonomy\Entity\Term;
+
+function custom_theme_preprocess_block__header(&$variables)
+{
+    $term = \Drupal::entityQuery('taxonomy_term')
+        ->condition('vid', 'categories')
+        ->execute();
+    $terms = Term::loadMultiple($term);
+    $categories = [];
+    foreach($terms as $term){
+        $categories[$term->id()]['id'] = $term->id();
+        $categories[$term->id()]['name'] = $term->getName();
+    }
+    $variables['categories'] = $categories;
+}
+
+// function custom_theme_preprocess_block__custom_theme_content(&$variables)
+// {
+//     $term = \Drupal::entityQuery('node')
+//         ->condition('type','product')
+//         ->execute();
+//         $terms = Node::loadMultiple($term);
+
+//         $products = [];
+//         foreach($terms as $term){
+//             dd($term->field_price->value);
+//             // $product[$term->id()]
+//         }
+// }

@@ -1,0 +1,10 @@
+product.product-view-by-category:
+  path: '/product/category/{category_id}'
+  defaults:
+    _controller: '\Drupal\product\Controller\ProductController::getProductByCategory'
+    _title: 'Products'
+  methods: 'GET'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: 'TRUE'

@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Allows users to create and organize related content in an outline.
+ */
+
+
+/**
+ * Implements hook_theme().
+ */
+function product_theme($existing, $type, $theme, $path) {
+    return
+        [
+            'product_view_by_category' => [
+                'variables' => [
+                    'categories' => [],
+                    'product_all' => [],
+                    'check_user' => null,
+                ]
+            ]
+        ];
+}
