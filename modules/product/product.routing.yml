@@ -8,3 +8,14 @@ product.product-view-by-category:
     _permission: 'access content'
   options:
     no_cache: 'TRUE'
+
+product.product-detail:
+  path: '/product/{product_id}'
+  defaults:
+    _controller: '\Drupal\product\Controller\ProductController::getProductDetail'
+    _title: 'Product'
+  methods: 'GET'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: 'TRUE'

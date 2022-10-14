@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Allows users to create and organize related content in an outline.
+ */
+
+
+/**
+ * Implements hook_theme().
+ */
+function order_theme($existing, $type, $theme, $path)
+{
+    return
+        [
+            'order_index' => [
+                'variables' => [
+                    // 'sessionCart' => [],
+                    // 'total' => "",
+                    // 'point_total' => ""
+                ]
+            ],
+        ];
+}

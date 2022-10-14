@@ -9,15 +9,24 @@
 /**
  * Implements hook_theme().
  */
-function product_theme($existing, $type, $theme, $path) {
+function product_theme($existing, $type, $theme, $path)
+{
     return
         [
             'product_view_by_category' => [
                 'variables' => [
                     'categories' => [],
-                    'product_all' => [],
-                    'check_user' => null,
+                    'products' => [],
+                    'category' => [],
+                    'price_range' => [],
+                    'parger' => null
                 ]
-            ]
+            ],
+            'product_detail' => [
+                'variables' => [
+                    'product' => [],
+                    'parger' => null
+                ]
+            ],
         ];
 }

@@ -88,12 +88,12 @@ const RESPONSIVE_PRIORITY_LOW = 'priority-low';
  *   The complete theme registry array, or an instance of the
  *   Drupal\Core\Utility\ThemeRegistry class.
  */
-function theme_get_registry($complete = TRUE) {
+function theme_get_registry($complete = TRUE)
+{
   $theme_registry = \Drupal::service('theme.registry');
   if ($complete) {
     return $theme_registry->get();
-  }
-  else {
+  } else {
     return $theme_registry->getRuntime();
   }
 }
@@ -103,7 +103,8 @@ function theme_get_registry($complete = TRUE) {
  *
  * @see \Drupal\Core\Extension\ThemeExtensionList::$defaults
  */
-function _system_default_theme_features() {
+function _system_default_theme_features()
+{
   return [
     'favicon',
     'logo',
@@ -119,7 +120,8 @@ function _system_default_theme_features() {
  * This function should be called when modules are added to the system, or when
  * a dynamic system needs to add more theme hooks.
  */
-function drupal_theme_rebuild() {
+function drupal_theme_rebuild()
+{
   \Drupal::service('theme.registry')->reset();
 }
 
@@ -137,7 +139,8 @@ function drupal_theme_rebuild() {
  * @return array
  *   The functions found, suitable for returning from hook_theme;
  */
-function drupal_find_theme_functions($cache, $prefixes) {
+function drupal_find_theme_functions($cache, $prefixes)
+{
   $implementations = [];
   $grouped_functions = \Drupal::service('theme.registry')->getPrefixGroupedUserFunctions($prefixes);
 
@@ -195,7 +198,8 @@ function drupal_find_theme_functions($cache, $prefixes) {
  * @param $path
  *   The path to search.
  */
-function drupal_find_theme_templates($cache, $extension, $path) {
+function drupal_find_theme_templates($cache, $extension, $path)
+{
   $implementations = [];
 
   // Collect paths to all sub-themes grouped by base themes. These will be
@@ -310,7 +314,8 @@ function drupal_find_theme_templates($cache, $extension, $path) {
  * @return
  *   The value of the requested setting, NULL if the setting does not exist.
  */
-function theme_get_setting($setting_name, $theme = NULL) {
+function theme_get_setting($setting_name, $theme = NULL)
+{
   /** @var \Drupal\Core\Theme\ThemeSettings[] $cache */
   $cache = &drupal_static(__FUNCTION__, []);
 
@@ -336,8 +341,7 @@ function theme_get_setting($setting_name, $theme = NULL) {
         if ($theme_settings = \Drupal::config($theme . '.settings')->get()) {
           $cache[$theme]->merge($theme_settings);
         }
-      }
-      catch (StorageException $e) {
+      } catch (StorageException $e) {
       }
 
       // If the theme does not support a particular feature, override the global
@@ -357,8 +361,7 @@ function theme_get_setting($setting_name, $theme = NULL) {
       if ($cache[$theme]->get('logo.use_default')) {
         $logo = \Drupal::service('theme.initialization')->getActiveThemeByName($theme)->getLogo();
         $cache[$theme]->set('logo.url', $file_url_generator->generateString($logo));
-      }
-      elseif ($logo_path = $cache[$theme]->get('logo.path')) {
+      } elseif ($logo_path = $cache[$theme]->get('logo.path')) {
         $cache[$theme]->set('logo.url', $file_url_generator->generateString($logo_path));
       }
 
@@ -368,15 +371,12 @@ function theme_get_setting($setting_name, $theme = NULL) {
         if ($cache[$theme]->get('favicon.use_default')) {
           if (file_exists($favicon = $theme_object->getPath() . '/favicon.ico')) {
             $cache[$theme]->set('favicon.url', $file_url_generator->generateString($favicon));
-          }
-          else {
+          } else {
             $cache[$theme]->set('favicon.url', $file_url_generator->generateString('core/misc/favicon.ico'));
           }
-        }
-        elseif ($favicon_path) {
+        } elseif ($favicon_path) {
           $cache[$theme]->set('favicon.url', $file_url_generator->generateString($favicon_path));
-        }
-        else {
+        } else {
           $cache[$theme]->set('features.favicon', FALSE);
         }
       }
@@ -412,7 +412,8 @@ function theme_get_setting($setting_name, $theme = NULL) {
  * @todo Refactor this to keep it in sync with Twig filtering in
  *   https://www.drupal.org/node/2575065
  */
-function theme_render_and_autoescape($arg) {
+function theme_render_and_autoescape($arg)
+{
   // If it's a renderable, then it'll be up to the generated render array it
   // returns to contain the necessary cacheability & attachment metadata. If
   // it doesn't implement CacheableDependencyInterface or AttachmentsInterface
@@ -431,12 +432,10 @@ function theme_render_and_autoescape($arg) {
 
   if (is_scalar($arg)) {
     $return = (string) $arg;
-  }
-  elseif (is_object($arg)) {
+  } elseif (is_object($arg)) {
     if ($arg instanceof RenderableInterface) {
       $arg = $arg->toRenderable();
-    }
-    elseif (method_exists($arg, '__toString')) {
+    } elseif (method_exists($arg, '__toString')) {
       $return = (string) $arg;
     }
     // You can't throw exceptions in the magic PHP __toString methods, see
@@ -444,8 +443,7 @@ function theme_render_and_autoescape($arg) {
     // we also support a toString method.
     elseif (method_exists($arg, 'toString')) {
       $return = $arg->toString();
-    }
-    else {
+    } else {
       throw new \Exception('Object of type ' . get_class($arg) . ' cannot be printed.');
     }
   }
@@ -479,27 +477,22 @@ function theme_render_and_autoescape($arg) {
  * @return
  *   The Config object with updated data.
  */
-function theme_settings_convert_to_config(array $theme_settings, Config $config) {
+function theme_settings_convert_to_config(array $theme_settings, Config $config)
+{
   foreach ($theme_settings as $key => $value) {
     if ($key == 'default_logo') {
       $config->set('logo.use_default', $value);
-    }
-    elseif ($key == 'logo_path') {
+    } elseif ($key == 'logo_path') {
       $config->set('logo.path', $value);
-    }
-    elseif ($key == 'default_favicon') {
+    } elseif ($key == 'default_favicon') {
       $config->set('favicon.use_default', $value);
-    }
-    elseif ($key == 'favicon_path') {
+    } elseif ($key == 'favicon_path') {
       $config->set('favicon.path', $value);
-    }
-    elseif ($key == 'favicon_mimetype') {
+    } elseif ($key == 'favicon_mimetype') {
       $config->set('favicon.mimetype', $value);
-    }
-    elseif (substr($key, 0, 7) == 'toggle_') {
+    } elseif (substr($key, 0, 7) == 'toggle_') {
       $config->set('features.' . mb_substr($key, 7), $value);
-    }
-    elseif (!in_array($key, ['theme', 'logo_upload'])) {
+    } elseif (!in_array($key, ['theme', 'logo_upload'])) {
       $config->set($key, $value);
     }
   }
@@ -517,7 +510,8 @@ function theme_settings_convert_to_config(array $theme_settings, Config $config)
  *   - timestamp:
  *   - text:
  */
-function template_preprocess_time(&$variables) {
+function template_preprocess_time(&$variables)
+{
   /** @var \Drupal\Core\Datetime\DateFormatterInterface $date_formatter */
   $date_formatter = \Drupal::service('date.formatter');
   // Format the 'datetime' attribute based on the timestamp.
@@ -555,7 +549,8 @@ function template_preprocess_time(&$variables) {
  *
  * @see form_process_datetime()
  */
-function template_preprocess_datetime_form(&$variables) {
+function template_preprocess_datetime_form(&$variables)
+{
   $element = $variables['element'];
 
   $variables['attributes'] = [];
@@ -601,7 +596,8 @@ function template_preprocess_datetime_form(&$variables) {
  *   - element: An associative array containing the properties of the element.
  *     Properties used: #title, #children, #required, #attributes.
  */
-function template_preprocess_datetime_wrapper(&$variables) {
+function template_preprocess_datetime_wrapper(&$variables)
+{
   $element = $variables['element'];
 
   if (!empty($element['#title'])) {
@@ -694,7 +690,8 @@ function template_preprocess_datetime_wrapper(&$variables) {
  * @see \Drupal\Core\Utility\LinkGenerator::generate()
  * @see system_page_attachments()
  */
-function template_preprocess_links(&$variables) {
+function template_preprocess_links(&$variables)
+{
   $links = $variables['links'];
   $heading = &$variables['heading'];
 
@@ -825,7 +822,8 @@ function template_preprocess_links(&$variables) {
  *   - sizes: The sizes attribute for viewport-based selection of images.
  *     - http://www.whatwg.org/specs/web-apps/current-work/multipage/embedded-content.html#introduction-3:viewport-based-selection-2
  */
-function template_preprocess_image(&$variables) {
+function template_preprocess_image(&$variables)
+{
   /** @var \Drupal\Core\File\FileUrlGeneratorInterface $file_url_generator */
   $file_url_generator = \Drupal::service('file_url_generator');
 
@@ -841,8 +839,7 @@ function template_preprocess_image(&$variables) {
       $source = $file_url_generator->generateString($src['uri']);
       if (isset($src['width']) && !empty($src['width'])) {
         $source .= ' ' . $src['width'];
-      }
-      elseif (isset($src['multiplier']) && !empty($src['multiplier'])) {
+      } elseif (isset($src['multiplier']) && !empty($src['multiplier'])) {
         $source .= ' ' . $src['multiplier'];
       }
       $srcset[] = $source;
@@ -961,7 +958,8 @@ function template_preprocess_image(&$variables) {
  *   - empty: The message to display in an extra row if table does not have any
  *     rows.
  */
-function template_preprocess_table(&$variables) {
+function template_preprocess_table(&$variables)
+{
   // Format the table columns:
   if (!empty($variables['colgroups'])) {
     foreach ($variables['colgroups'] as &$colgroup) {
@@ -970,8 +968,7 @@ function template_preprocess_table(&$variables) {
         $cols = $colgroup['data'];
         unset($colgroup['data']);
         $colgroup_attributes = $colgroup;
-      }
-      else {
+      } else {
         $cols = $colgroup;
         $colgroup_attributes = [];
       }
@@ -1009,12 +1006,10 @@ function template_preprocess_table(&$variables) {
         $cell_content = $cell;
         $cell_attributes = new Attribute();
         $is_header = TRUE;
-      }
-      else {
+      } else {
         if (isset($cell['colspan'])) {
           $header_columns += $cell['colspan'];
-        }
-        else {
+        } else {
           $header_columns++;
         }
         $cell_content = '';
@@ -1033,8 +1028,7 @@ function template_preprocess_table(&$variables) {
         if (!empty($cell['class']) && is_array($cell['class'])) {
           if (in_array(RESPONSIVE_PRIORITY_MEDIUM, $cell['class'])) {
             $responsive_classes[$responsive_index] = RESPONSIVE_PRIORITY_MEDIUM;
-          }
-          elseif (in_array(RESPONSIVE_PRIORITY_LOW, $cell['class'])) {
+          } elseif (in_array(RESPONSIVE_PRIORITY_LOW, $cell['class'])) {
             $responsive_classes[$responsive_index] = RESPONSIVE_PRIORITY_LOW;
           }
         }
@@ -1054,7 +1048,7 @@ function template_preprocess_table(&$variables) {
   $variables['header_columns'] = $header_columns;
 
   // Rows and footer have the same structure.
-  $sections = ['rows' , 'footer'];
+  $sections = ['rows', 'footer'];
   foreach ($sections as $section) {
     if (!empty($variables[$section])) {
       foreach ($variables[$section] as $row_key => $row) {
@@ -1087,8 +1081,7 @@ function template_preprocess_table(&$variables) {
               $cell_content = $cell;
               $cell_attributes = [];
               $is_header = FALSE;
-            }
-            else {
+            } else {
               $cell_content = '';
               if (isset($cell['data'])) {
                 $cell_content = $cell['data'];
@@ -1142,7 +1135,8 @@ function template_preprocess_table(&$variables) {
  *
  * @see https://www.drupal.org/node/1842756
  */
-function template_preprocess_item_list(&$variables) {
+function template_preprocess_item_list(&$variables)
+{
   $variables['wrapper_attributes'] = new Attribute($variables['wrapper_attributes']);
   foreach ($variables['items'] as &$item) {
     $attributes = [];
@@ -1201,7 +1195,8 @@ function template_preprocess_item_list(&$variables) {
  *   - element: An associative array containing the properties of the element.
  *     Properties used: #id, #attributes, #children.
  */
-function template_preprocess_container(&$variables) {
+function template_preprocess_container(&$variables)
+{
   $variables['has_parent'] = FALSE;
   $element = $variables['element'];
   // Ensure #attributes is set.
@@ -1232,7 +1227,8 @@ function template_preprocess_container(&$variables) {
  *     dangerous HTML such as <script> tags.
  *   - active: The key for the currently active maintenance task.
  */
-function template_preprocess_maintenance_task_list(&$variables) {
+function template_preprocess_maintenance_task_list(&$variables)
+{
   $items = $variables['items'];
   $active = $variables['active'];
 
@@ -1244,8 +1240,7 @@ function template_preprocess_maintenance_task_list(&$variables) {
       $variables['tasks'][$k]['attributes']->addClass('is-active');
       $variables['tasks'][$k]['status'] = t('active');
       $done = FALSE;
-    }
-    else {
+    } else {
       if ($done) {
         $variables['tasks'][$k]['attributes']->addClass('done');
         $variables['tasks'][$k]['status'] = t('done');
@@ -1264,7 +1259,8 @@ function template_preprocess_maintenance_task_list(&$variables) {
  * See the @link themeable Default theme implementations topic @endlink for
  * details.
  */
-function template_preprocess(&$variables, $hook, $info) {
+function template_preprocess(&$variables, $hook, $info)
+{
   // Merge in variables that don't depend on hook and don't change during a
   // single page request.
   // Use the advanced drupal_static() pattern, since this is called very often.
@@ -1291,7 +1287,8 @@ function template_preprocess(&$variables, $hook, $info) {
 /**
  * Returns hook-independent variables to template_preprocess().
  */
-function _template_preprocess_default_variables() {
+function _template_preprocess_default_variables()
+{
   // Variables that don't depend on a database connection.
   $variables = [
     'attributes' => [],
@@ -1322,7 +1319,8 @@ function _template_preprocess_default_variables() {
  *   An associative array containing:
  *   - page: A render element representing the page.
  */
-function template_preprocess_html(&$variables) {
+function template_preprocess_html(&$variables)
+{
   $variables['page'] = $variables['html']['page'];
   unset($variables['html']['page']);
   $variables['page_top'] = NULL;
@@ -1354,8 +1352,7 @@ function template_preprocess_html(&$variables) {
 
   if ($is_front_page) {
     $variables['root_path'] = FALSE;
-  }
-  else {
+  } else {
     $system_path = \Drupal::service('path.current')->getPath();
     $variables['root_path'] = explode('/', $system_path)[1];
   }
@@ -1380,8 +1377,7 @@ function template_preprocess_html(&$variables) {
       'title' => t('Home'),
       'name' => $site_config->get('name'),
     ];
-  }
-  else {
+  } else {
     $head_title = ['name' => $site_config->get('name')];
     if ($site_config->get('slogan')) {
       $head_title['slogan'] = strip_tags($site_config->get('slogan'));
@@ -1412,7 +1408,8 @@ function template_preprocess_html(&$variables) {
  *
  * See the page.html.twig template for the list of variables.
  */
-function template_preprocess_page(&$variables) {
+function template_preprocess_page(&$variables)
+{
   $language_interface = \Drupal::languageManager()->getCurrentLanguage();
 
   foreach (\Drupal::theme()->getActiveTheme()->getRegions() as $region) {
@@ -1428,8 +1425,7 @@ function template_preprocess_page(&$variables) {
   // An exception might be thrown.
   try {
     $variables['is_front'] = \Drupal::service('path.matcher')->isFrontPage();
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
     // If the database is not yet available, set default values for these
     // variables.
     $variables['is_front'] = FALSE;
@@ -1464,7 +1460,8 @@ function template_preprocess_page(&$variables) {
  *   hook_theme_suggestions_HOOK_alter() or to $variables['attributes']['class']
  *   if the suggestions represent extra CSS classes.
  */
-function theme_get_suggestions($args, $base, $delimiter = '__') {
+function theme_get_suggestions($args, $base, $delimiter = '__')
+{
 
   // Build a list of suggested theme hooks in order of
   // specificity. One suggestion is made for every element of the current path,
@@ -1522,7 +1519,8 @@ function theme_get_suggestions($args, $base, $delimiter = '__') {
  *
  * @see system_page_attachments()
  */
-function template_preprocess_maintenance_page(&$variables) {
+function template_preprocess_maintenance_page(&$variables)
+{
   // @todo Rename the templates to page--maintenance + page--install.
   template_preprocess_page($variables);
 
@@ -1552,7 +1550,8 @@ function template_preprocess_maintenance_page(&$variables) {
  *
  * @see template_preprocess_maintenance_page()
  */
-function template_preprocess_install_page(&$variables) {
+function template_preprocess_install_page(&$variables)
+{
   template_preprocess_maintenance_page($variables);
 
   // Override the site name that is displayed on the page, since Drupal is
@@ -1575,7 +1574,8 @@ function template_preprocess_install_page(&$variables) {
  *   An associative array containing:
  *   - elements: An associative array containing properties of the region.
  */
-function template_preprocess_region(&$variables) {
+function template_preprocess_region(&$variables)
+{
   // Create the $content variable that templates expect.
   $variables['content'] = $variables['elements']['#children'];
   $variables['region'] = $variables['elements']['#region'];
@@ -1592,7 +1592,8 @@ function template_preprocess_region(&$variables) {
  *   - attributes: A string containing the attributes for the wrapping div.
  *   - title_attributes: A string containing the attributes for the title.
  */
-function template_preprocess_field(&$variables, $hook) {
+function template_preprocess_field(&$variables, $hook)
+{
   $element = $variables['element'];
 
   // Creating variables for the template.
@@ -1637,7 +1638,7 @@ function template_preprocess_field(&$variables, $hook) {
     // the <a> element of a field item being rendered as a link). Other field
     // formatters leave them within $element['#items'][$delta]['_attributes'] to
     // be rendered on the item wrappers provided by field.html.twig.
-    $variables['items'][$delta]['attributes'] = !empty($element['#items'][$delta]->_attributes) ? new Attribute($element['#items'][$delta]->_attributes) : clone($default_attributes);
+    $variables['items'][$delta]['attributes'] = !empty($element['#items'][$delta]->_attributes) ? new Attribute($element['#items'][$delta]->_attributes) : clone ($default_attributes);
     $delta++;
   }
 }
@@ -1653,7 +1654,8 @@ function template_preprocess_field(&$variables, $hook) {
  *   An associative array containing:
  *   - element: A render element representing the form element.
  */
-function template_preprocess_field_multiple_value_form(&$variables) {
+function template_preprocess_field_multiple_value_form(&$variables)
+{
   $element = $variables['element'];
   $variables['multiple'] = $element['#cardinality_multiple'];
   $variables['attributes'] = $element['#attributes'];
@@ -1687,8 +1689,7 @@ function template_preprocess_field_multiple_value_form(&$variables) {
     foreach (Element::children($element) as $key) {
       if ($key === 'add_more') {
         $variables['button'] = &$element[$key];
-      }
-      else {
+      } else {
         $items[] = &$element[$key];
       }
     }
@@ -1740,8 +1741,7 @@ function template_preprocess_field_multiple_value_form(&$variables) {
       // Add the description's id to the table aria attributes.
       $variables['table']['#attributes']['aria-describedby'] = $element['#attributes']['aria-describedby'];
     }
-  }
-  else {
+  } else {
     $variables['elements'] = [];
     foreach (Element::children($element) as $key) {
       $variables['elements'][] = $element[$key];
@@ -1758,7 +1758,8 @@ function template_preprocess_field_multiple_value_form(&$variables) {
  *   An associative array containing:
  *   - links: A list of \Drupal\Core\Link objects which should be rendered.
  */
-function template_preprocess_breadcrumb(&$variables) {
+function template_preprocess_breadcrumb(&$variables)
+{
   $variables['breadcrumb'] = [];
   /** @var \Drupal\Core\Link $link */
   foreach ($variables['links'] as $key => $link) {
@@ -1786,7 +1787,8 @@ function template_preprocess_breadcrumb(&$variables) {
  *     - #route_parameters: An associative array of the route parameters.
  *     - #quantity: The number of pages in the list.
  */
-function template_preprocess_pager(&$variables) {
+function template_preprocess_pager(&$variables)
+{
   $element = $variables['pager']['#element'];
   $parameters = $variables['pager']['#parameters'];
   $quantity = empty($variables['pager']['#quantity']) ? 0 : $variables['pager']['#quantity'];
@@ -1869,7 +1871,7 @@ function template_preprocess_pager(&$variables) {
     // Now generate the actual pager piece.
     for (; $i <= $pager_last && $i <= $pager_max; $i++) {
       $options = [
-        'query' => $pager_manager->getUpdatedParameters($parameters, $element, $i - 1),
+        'query' => $pager_manager->getUpdatedParameters($parameters, $element, $i -1 ),
       ];
       $items['pages'][$i]['href'] = Url::fromRoute($route_name, $route_parameters, $options)->toString();
       $items['pages'][$i]['attributes'] = new Attribute();
@@ -1927,7 +1929,8 @@ function template_preprocess_pager(&$variables) {
  *       'localized_options' keys.
  *     - #active: A boolean indicating whether the local task is active.
  */
-function template_preprocess_menu_local_task(&$variables) {
+function template_preprocess_menu_local_task(&$variables)
+{
   $link = $variables['element']['#link'];
   $link += [
     'localized_options' => [],
@@ -1963,7 +1966,8 @@ function template_preprocess_menu_local_task(&$variables) {
  *     - #link: A menu link array with 'title', 'url', and (optionally)
  *       'localized_options' keys.
  */
-function template_preprocess_menu_local_action(&$variables) {
+function template_preprocess_menu_local_action(&$variables)
+{
   $link = $variables['element']['#link'];
   $link += [
     'localized_options' => [],
@@ -1985,7 +1989,8 @@ function template_preprocess_menu_local_action(&$variables) {
  *
  * Sorts using ['_weight']['#value']
  */
-function _field_multiple_value_form_sort_helper($a, $b) {
+function _field_multiple_value_form_sort_helper($a, $b)
+{
   $a_weight = (is_array($a) && isset($a['_weight']['#value']) ? $a['_weight']['#value'] : 0);
   $b_weight = (is_array($b) && isset($b['_weight']['#value']) ? $b['_weight']['#value'] : 0);
   return $a_weight - $b_weight;
@@ -1994,7 +1999,8 @@ function _field_multiple_value_form_sort_helper($a, $b) {
 /**
  * Provides theme registration for themes across .inc files.
  */
-function drupal_common_theme() {
+function drupal_common_theme()
+{
   return [
     // From theme.inc.
     'html' => [

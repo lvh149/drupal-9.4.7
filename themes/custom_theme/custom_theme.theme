@@ -1,32 +1,57 @@
 <?php
 
+use Drupal\image\Entity\ImageStyle;
 use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
 
+
 function custom_theme_preprocess_block__header(&$variables)
 {
-    $term = \Drupal::entityQuery('taxonomy_term')
-        ->condition('vid', 'categories')
-        ->execute();
-    $terms = Term::loadMultiple($term);
+    $manager = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+    $level1 = $manager->loadTree('categories', 0, 1, TRUE);
+    $level2 = $manager->loadTree('categories', 0, 2, TRUE);
     $categories = [];
-    foreach($terms as $term){
-        $categories[$term->id()]['id'] = $term->id();
-        $categories[$term->id()]['name'] = $term->getName();
+    foreach ($level1 as $lv1) {
+        $categories[$lv1->id()]['id'] = $lv1->id();
+        $categories[$lv1->id()]['name'] = $lv1->getName();
+
+        $resultLevel2 = array();
+        foreach ($level2 as $lv2) {
+            if (!empty($manager->loadParents($lv2->id()))) {
+                if ($lv1->id() === $lv2->parents['0']) {
+                    $resultLevel2[$lv2->id()]['id'] = $lv2->id();
+                    $resultLevel2[$lv2->id()]['name'] = $lv2->getName();
+                }
+            }
+        }
+        $categories[$lv1->id()]['level2'] = $resultLevel2;
     }
     $variables['categories'] = $categories;
 }
 
-// function custom_theme_preprocess_block__custom_theme_content(&$variables)
-// {
-//     $term = \Drupal::entityQuery('node')
-//         ->condition('type','product')
-//         ->execute();
-//         $terms = Node::loadMultiple($term);
+function custom_theme_preprocess_block__custom_theme_content(&$variables)
+{
+    $manager = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+    $level1 = $manager->loadTree('categories', 0, 1, TRUE);
+    $categories = [];
+    foreach ($level1 as $lv1) {
+        $categories[$lv1->id()]['id'] = $lv1->id();
+        $categories[$lv1->id()]['name'] = $lv1->getName();
+    }
+    $variables['categories'] = $categories;
 
-//         $products = [];
-//         foreach($terms as $term){
-//             dd($term->field_price->value);
-//             // $product[$term->id()]
-//         }
-// }
+    $term = \Drupal::entityQuery('node')
+        ->condition('type', 'product')
+        ->execute();
+    $terms = Node::loadMultiple($term);
+
+    $products = [];
+    foreach ($terms as $term) {
+        $products[$term->id()]['id'] =  $term->id();
+        $products[$term->id()]['name'] =  $term->getTitle();
+        $products[$term->id()]['price'] = "$".number_format($term->field_price->value, 0, ',', '.');
+        $products[$term->id()]['category_parent_id'] = $term->field_category->entity->parent->entity->id() ?? $term->field_category->entity->id();
+        $products[$term->id()]['image'] = file_create_url($term->field_image_product->entity->getFileUri());
+    }
+    $variables['products'] = $products;
+}

@@ -82,7 +82,7 @@ class PagerManager implements PagerManagerInterface {
     // exception of the requested page index for the current element.
     $element_pages = [];
     $max = $this->getMaxPagerElementId();
-    for ($i = 0; $i <= $max; $i++) {
+    for ($i = 1; $i <= $max+1; $i++) {
       $currentPage = ($pager = $this->getPager($i)) ? $pager->getCurrentPage() : NULL;
       $element_pages[] = ($i == $element) ? $index : $currentPage;
     }

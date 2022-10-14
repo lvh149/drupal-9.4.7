@@ -1,0 +1,17 @@
+name: cart
+type: module
+description: 'Allows users to create and organize related content in an outline.'
+package: Cart
+
+core_version_requirement: ^9
+# version: VERSION
+dependencies:
+  - drupal:views
+configure: cart.settings
+libraries:
+  - cart/common
+
+# Information added by Drupal.org packaging script on 2022-06-01
+version: '9.4.7'
+project: 'drupal'
+datestamp: 1654098838

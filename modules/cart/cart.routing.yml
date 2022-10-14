@@ -1,0 +1,43 @@
+cart.index:
+  path: '/cart'
+  defaults:
+    _controller: '\Drupal\cart\Controller\CartController::index'
+    _title: 'Shopping cart'
+  methods: 'GET'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+cart.add_to_cart:
+  path: '/add_to_cart'
+  defaults:
+    _controller: '\Drupal\cart\Controller\CartController::addToCart'
+    _title: 'Shopping cart'
+  methods: 'GET'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+cart.delete_product_cart:
+  path: '/delete_product_cart'
+  defaults:
+    _controller: '\Drupal\cart\Controller\CartController::deleteProductCart'
+    _title: 'Shopping cart'
+  methods: 'GET'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+
+cart.update_quantity_cart:
+  path: '/update_quantity_cart'
+  defaults:
+    _controller: '\Drupal\cart\Controller\CartController::updateQuantityCart'
+    _title: 'Shopping cart'
+  methods: 'GET'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: 'TRUE'

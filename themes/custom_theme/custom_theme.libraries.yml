@@ -21,6 +21,7 @@ common:
     js/owl.carousel.min.js: {}
     js/jquery.nicescroll.min.js: {}
     js/main.js: {}
+    js/notify.js: {}
 
 jquery:
   header: true

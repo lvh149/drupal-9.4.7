@@ -1,0 +1,3 @@
+common:
+  js:
+    assets/js/product.js: {}
